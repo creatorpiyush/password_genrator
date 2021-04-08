@@ -6,6 +6,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", require("./routes/indexRoute"));
+app.use("/user", require("./routes/userRoute"));
 
 // port listening
 const port = process.env.PORT || 5555;

@@ -9,9 +9,15 @@ const userSchema = new Schema({
         unique: true,
     },
 
+    name_of_user: {
+        type: String,
+        required: true,
+    },
+
     username: {
         type: String,
         required: true,
+        unique: true,
     },
     password: {
         type: String,

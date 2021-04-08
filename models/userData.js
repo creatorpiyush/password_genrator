@@ -6,7 +6,6 @@ const userDataSchema = new Schema({
     application_name: {
         type: String,
         required: true,
-        unique: true,
     },
 
     application_username: {
