@@ -15,7 +15,7 @@ route.post("/adduser", (req, res) => {
         user_email: req.body.user_email,
         name_of_user: req.body.name_of_user,
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
     });
 
     temp.save((err, result) => {
