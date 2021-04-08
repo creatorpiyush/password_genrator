@@ -6,6 +6,8 @@ route.get("/", (req, res) => {
     res.send("Hi from Home");
 });
 
+route.use("/:username", require("./userDataRoute"));
+
 route.get("/:username", (req, res) => {
     db.User.findOne({ username: req.params.username })
         .populate({

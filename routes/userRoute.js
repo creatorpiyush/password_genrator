@@ -25,4 +25,30 @@ route.post("/adduser", (req, res) => {
     });
 });
 
+route.post("/login", (req, res) => {
+    db.User.findOne({ user_email: req.body.user_email }, (err, result) => {
+        if (err) return res.send(err);
+        if (result) {
+            const isPasswordMatched = bcrypt.compareSync(
+                req.body.password,
+                result.password
+            );
+
+            if (isPasswordMatched) {
+                return res.redirect(`/${result.username}`);
+            } else {
+                return res.json({
+                    status: false,
+                    message: `Password not matched...`,
+                });
+            }
+        } else {
+            return res.json({
+                status: false,
+                message: `Email not Found...`,
+            });
+        }
+    });
+});
+
 module.exports = route;
