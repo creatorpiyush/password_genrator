@@ -13,7 +13,7 @@ const userDataSchema = new Schema({
         required: true,
     },
     application_password: {
-        type: String,
+        type: Object,
         required: true,
     },
 });
