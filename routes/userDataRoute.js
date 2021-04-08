@@ -17,7 +17,10 @@ route.get("/:username", (req, res) => {
             path: "user_data_storage",
         })
         .then((user) => {
-            res.json(user);
+            let data = user.user_data_storage;
+            res.send(data);
+            // password decryption
+            // res.send(decrypt(user.user_data_storage[1].application_password));
         })
         .catch((err) => {
             res.json(err);
