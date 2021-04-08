@@ -17,8 +17,39 @@ route.get("/:username", (req, res) => {
             path: "user_data_storage",
         })
         .then((user) => {
-            let data = user.user_data_storage;
-            res.send(data);
+            let data = user;
+
+            // application_name
+            let application_name = [];
+            for (var i = 0; i < data.user_data_storage.length; i++) {
+                application_name[i] = data.user_data_storage[i].application_name;
+            }
+
+            // application_username
+            let application_username = [];
+            for (var i = 0; i < data.user_data_storage.length; i++) {
+                application_username[i] =
+                    data.user_data_storage[i].application_username;
+            }
+
+            // application_password
+            let application_password = [];
+            for (var i = 0; i < data.user_data_storage.length; i++) {
+                application_password[i] = decrypt(
+                    data.user_data_storage[i].application_password
+                );
+            }
+
+            res.json({
+                username: data.username,
+                user_email: data.user_email,
+                name_of_user: data.name_of_user,
+                user_data_storage: {
+                    application_name: application_name,
+                    application_username: application_username,
+                    application_password: application_password,
+                },
+            });
             // password decryption
             // res.send(decrypt(user.user_data_storage[1].application_password));
         })
