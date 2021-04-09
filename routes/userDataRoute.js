@@ -12,44 +12,42 @@ let username;
 
 route.get("/:username", (req, res) => {
     username = req.params.username;
+
     db.User.findOne({ username: req.params.username })
         .populate({
             path: "user_data_storage",
         })
         .then((user) => {
+            if (!user || user === null) {
+                return res.redirect("/");
+            }
+
             let data = user;
 
-            // application_name
-            let application_name = [];
+            // user's Data
+            let data_user = {
+                user_content: [],
+            };
             for (var i = 0; i < data.user_data_storage.length; i++) {
-                application_name[i] = data.user_data_storage[i].application_name;
+                data_user.user_content[i] = data.user_data_storage[i];
             }
 
-            // application_username
-            let application_username = [];
-            for (var i = 0; i < data.user_data_storage.length; i++) {
-                application_username[i] =
-                    data.user_data_storage[i].application_username;
-            }
-
-            // application_password
-            let application_password = [];
-            for (var i = 0; i < data.user_data_storage.length; i++) {
-                application_password[i] = decrypt(
-                    data.user_data_storage[i].application_password
+            for (var i in data_user.user_content) {
+                data_user.user_content[i].application_password = decrypt(
+                    data_user.user_content[i].application_password
                 );
             }
 
-            res.json({
+            const user_data = {
+                id: data._id,
                 username: data.username,
                 user_email: data.user_email,
                 name_of_user: data.name_of_user,
-                user_data_storage: {
-                    application_name: application_name,
-                    application_username: application_username,
-                    application_password: application_password,
-                },
-            });
+                user_data_storage: data_user,
+            };
+
+            // res.send({ user_data });
+            res.render("user", { user_data });
             // password decryption
             // res.send(decrypt(user.user_data_storage[1].application_password));
         })

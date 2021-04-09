@@ -3,7 +3,7 @@ const route = require("express").Router();
 const db = require("../models");
 
 route.get("/", (req, res) => {
-    res.send("Hi from Home");
+    res.render("index");
 });
 
 route.use("/", require("./userDataRoute"));
