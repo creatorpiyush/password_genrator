@@ -9,6 +9,7 @@ const { encrypt, decrypt } = require("./crypto");
 // });
 
 let username;
+route.get("/favicon.ico", (req, res) => {});
 
 route.get("/:username", (req, res) => {
     username = req.params.username;
@@ -58,6 +59,7 @@ route.get("/:username", (req, res) => {
 
 route.post("/addaccount", async(req, res) => {
     // res.send(username);
+    // console.log(username);
     if (!username) {
         return res.redirect("/");
     }
