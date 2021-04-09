@@ -4,10 +4,6 @@ const bcrypt = require("bcryptjs");
 
 const db = require("../models");
 
-route.get("/", (req, res) => {
-    res.send("Hi from User");
-});
-
 route.post("/adduser", (req, res) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, 13);
 
