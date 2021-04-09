@@ -311,17 +311,13 @@
 </head>
 
 <body>
-
-
     <div class="container">
 
         <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Add Application
             Details</button>
-
         <div id="id01" class="modal">
 
             <form class="modal-content animate" action="/addaccount" method="post">
-
                 <div class="container">
 
                     <label for="uname"><b>Application Name</b></label>
@@ -335,33 +331,23 @@
                         required>
 
                     <button type="submit">Login</button>
-                </div>
 
+                </div>
                 <div class="container" style="background-color:#f1f1f1">
                     <button type="button" onclick="document.getElementById('id01').style.display='none'"
                         class="cancelbtn">Cancel</button>
                 </div>
             </form>
         </div>
-
     </div>
-
-
-
 
     <div class="container">
         <div class="outer-wrap">
-
             <div class="content">
-
-
                 <main class="main-area">
-
                     <section class="cards">
                         {{#each user_data.user_data_storage.user_content}}
-
                         <article class="card">
-
                             <div class="card-content">
                                 <h2>{{this.application_name}}</h2>
                                 <p>{{this.application_username}}</p>
@@ -370,22 +356,17 @@
                                 <br>
                                 <input type="checkbox" id=`{{this.id}}` onclick="myFunction(`{{this.id}}`)">
                                 <label for=`{{this.id}}`>Show Password</label><br>
-                            </div><!-- .card-content -->
-
-                        </article><!-- .card -->
-
+                            </div>
+                        </article>
                         {{/each}}
-                    </section><!-- .cards -->
+                    </section>
                 </main>
-
             </div>
-        </div><!-- .content -->
-    </div><!-- .outer-wrap -->
+        </div>
+    </div>
 
     <script>
-        // Get the modal
         var modal = document.getElementById('id01');
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
