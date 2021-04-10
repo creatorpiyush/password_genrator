@@ -29,35 +29,42 @@ route.post("/adduser", (req, res) => {
 });
 
 route.post("/login", (req, res) => {
-    db.User.findOne({ user_email: req.body.user_email }, (err, result) => {
-        if (err) return res.send(err);
-        if (result) {
-            const isPasswordMatched = bcrypt.compareSync(
-                req.body.password,
-                result.password
-            );
+    db.User.findOne({
+            $or: [
+                { user_email: req.body.email_username },
+                { username: req.body.email_username },
+            ],
+        },
+        (err, result) => {
+            if (err) return res.send(err);
+            if (result) {
+                const isPasswordMatched = bcrypt.compareSync(
+                    req.body.password,
+                    result.password
+                );
 
-            if (isPasswordMatched) {
-                req.session.userId = result.id;
-                req.session.username = result.username;
-                req.session.user_email = result.user_email;
+                if (isPasswordMatched) {
+                    req.session.userId = result.id;
+                    req.session.username = result.username;
+                    req.session.user_email = result.user_email;
 
-                console.log(req.session);
+                    console.log(req.session);
 
-                return res.redirect(`/${result.username}`);
+                    return res.redirect(`/${result.username}`);
+                } else {
+                    return res.json({
+                        status: false,
+                        message: `Password not matched...`,
+                    });
+                }
             } else {
                 return res.json({
                     status: false,
-                    message: `Password not matched...`,
+                    message: `Email not Found...`,
                 });
             }
-        } else {
-            return res.json({
-                status: false,
-                message: `Email not Found...`,
-            });
         }
-    });
+    );
 });
 
 module.exports = route;

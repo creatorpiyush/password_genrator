@@ -68,7 +68,7 @@ route.get("/:username", (req, res) => {
 route.post("/addaccount", async(req, res) => {
     // res.send(username);
     // console.log(username);
-    if (!res.session.username) {
+    if (!req.session.username) {
         return res.redirect("/");
     }
 
@@ -80,7 +80,7 @@ route.post("/addaccount", async(req, res) => {
             application_password: hash,
         })
         .then((userData) => {
-            return db.User.findOneAndUpdate({ username: username }, { $push: { user_data_storage: userData._id } });
+            return db.User.findOneAndUpdate({ username: req.session.username }, { $push: { user_data_storage: userData._id } });
         })
         .then((user) => {
             res.redirect(`/${user.username}`);
