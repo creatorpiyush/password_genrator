@@ -1,9 +1,19 @@
 const express = require("express");
 
+const session = require("express-session");
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+    session({
+        resave: true,
+        saveUninitialized: true,
+        secret: "24knb6k247b2k7b2k7bk247hb2kh7b2",
+    })
+);
 
 app.use(express.static(__dirname + "/public"));
 

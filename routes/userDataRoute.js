@@ -14,53 +14,61 @@ route.get("/favicon.ico", (req, res) => {});
 route.get("/:username", (req, res) => {
     username = req.params.username;
 
-    db.User.findOne({ username: req.params.username })
-        .populate({
-            path: "user_data_storage",
-        })
-        .then((user) => {
-            if (!user || user === null) {
-                return res.redirect("/");
-            }
+    if (!req.session.userId) {
+        return res.redirect("/");
+    } else {
+        try {
+            db.User.findOne({ username: req.params.username })
+                .populate({
+                    path: "user_data_storage",
+                })
+                .then((user) => {
+                    if (!user || user === null) {
+                        return res.redirect("/");
+                    }
 
-            let data = user;
+                    let data = user;
 
-            // user's Data
-            let data_user = {
-                user_content: [],
-            };
-            for (var i = 0; i < data.user_data_storage.length; i++) {
-                data_user.user_content[i] = data.user_data_storage[i];
-            }
+                    // user's Data
+                    let data_user = {
+                        user_content: [],
+                    };
+                    for (var i = 0; i < data.user_data_storage.length; i++) {
+                        data_user.user_content[i] = data.user_data_storage[i];
+                    }
 
-            for (var i in data_user.user_content) {
-                data_user.user_content[i].application_password = decrypt(
-                    data_user.user_content[i].application_password
-                );
-            }
+                    for (var i in data_user.user_content) {
+                        data_user.user_content[i].application_password = decrypt(
+                            data_user.user_content[i].application_password
+                        );
+                    }
 
-            const user_data = {
-                id: data._id,
-                username: data.username,
-                user_email: data.user_email,
-                name_of_user: data.name_of_user,
-                user_data_storage: data_user,
-            };
+                    const user_data = {
+                        id: data._id,
+                        username: data.username,
+                        user_email: data.user_email,
+                        name_of_user: data.name_of_user,
+                        user_data_storage: data_user,
+                    };
 
-            // res.send({ user_data });
-            res.render("user", { user_data });
-            // password decryption
-            // res.send(decrypt(user.user_data_storage[1].application_password));
-        })
-        .catch((err) => {
-            res.json(err);
-        });
+                    // res.send({ user_data });
+                    res.render("user", { user_data });
+                    // password decryption
+                    // res.send(decrypt(user.user_data_storage[1].application_password));
+                })
+                .catch((err) => {
+                    res.json(err);
+                });
+        } catch (err) {
+            console.log(err);
+        }
+    }
 });
 
 route.post("/addaccount", async(req, res) => {
     // res.send(username);
     // console.log(username);
-    if (!username) {
+    if (!res.session.username) {
         return res.redirect("/");
     }
 

@@ -1,23 +1,26 @@
 const route = require("express").Router();
 
+const session = require("express-session");
+
 const bcrypt = require("bcryptjs");
 
 const db = require("../models");
 
 route.get("/signup", (req, res) => {
-    res.render("signup");
+    if (req.session.userId) {
+        return res.redirect(`/${req.session.username}`);
+    }
+    return res.render("signup");
 });
 
 route.post("/adduser", (req, res) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, 13);
-
     const temp = new db.User({
         user_email: req.body.user_email,
         name_of_user: req.body.name_of_user,
         username: req.body.username,
         password: hashedPassword,
     });
-
     temp.save((err, result) => {
         if (err) return res.render("signup", { err: err });
 
@@ -35,6 +38,12 @@ route.post("/login", (req, res) => {
             );
 
             if (isPasswordMatched) {
+                req.session.userId = result.id;
+                req.session.username = result.username;
+                req.session.user_email = result.user_email;
+
+                console.log(req.session);
+
                 return res.redirect(`/${result.username}`);
             } else {
                 return res.json({
