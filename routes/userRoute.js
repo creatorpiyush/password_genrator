@@ -4,6 +4,10 @@ const bcrypt = require("bcryptjs");
 
 const db = require("../models");
 
+route.get("/signup", (req, res) => {
+    res.render("signup");
+});
+
 route.post("/adduser", (req, res) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, 13);
 
@@ -15,9 +19,9 @@ route.post("/adduser", (req, res) => {
     });
 
     temp.save((err, result) => {
-        if (err) return res.send({ err: err });
+        if (err) return res.render("signup", { err: err });
 
-        return res.send(result);
+        return res.redirect("/");
     });
 });
 

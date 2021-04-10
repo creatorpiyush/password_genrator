@@ -62,6 +62,11 @@
             padding-top: 16px;
         }
 
+        span.signup {
+            float: right;
+            padding-top: 16px;
+        }
+
         /* The Modal (background) */
         .modal {
             display: none;
@@ -172,6 +177,7 @@
 
                 <label for="psw"><b>Password</b></label>
                 <input type="password" placeholder="Enter Password" name="password" required>
+                <span class="psw"><a href="#">Forgot password?</a></span>
 
                 <button type="submit">Login</button>
                 {{!-- <label>
@@ -182,7 +188,7 @@
             <div class="container" style="background-color:#f1f1f1">
                 <button type="button" onclick="document.getElementById('id01').style.display='none'"
                     class="cancelbtn">Cancel</button>
-                <span class="psw">Forgot <a href="#">password?</a></span>
+                <span class="signup">New User? <a href="/user/signup">Signup now</a></span>
             </div>
         </form>
     </div>
