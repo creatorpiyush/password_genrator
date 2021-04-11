@@ -48,8 +48,6 @@ route.post("/login", (req, res) => {
                     req.session.username = result.username;
                     req.session.user_email = result.user_email;
 
-                    console.log(req.session);
-
                     return res.redirect(`/${result.username}`);
                 } else {
                     return res.json({
