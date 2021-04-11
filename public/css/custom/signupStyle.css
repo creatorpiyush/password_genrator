@@ -21,7 +21,7 @@ body {
 }
 
 .signup-form {
-    width: 390px;
+    /* width: 390px; */
     margin: 30px auto;
     border-radius: 10%;
 }
@@ -96,4 +96,9 @@ body {
 .signup-form .hint-text {
     padding-bottom: 15px;
     text-align: center;
+}
+
+.clear {
+    clear: both;
+    height: 60px;
 }

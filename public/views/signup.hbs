@@ -8,37 +8,72 @@
 
     <link rel="stylesheet" href="../css/custom/signupStyle.css">
 
+    <title>Password-Manager | Signup</title>
+
 </head>
 
 <body>
 
-    <div class="signup-form">
-        <form action="/examples/actions/confirmation.php" method="post">
-            <h2>Sign Up</h2>
-            <p>Please fill in this form to create an account!</p>
-            <hr>
-            <div class="form-group">
-                <input type="text" class="form-control" name="name_of_user" placeholder="Your Name" required="required">
-            </div>
-            <div class="form-group">
-                <input type="email" class="form-control" name="user_email" placeholder="Email" required="required">
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" name="username" placeholder="Username" required="required">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password" required="required">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password"
-                    required="required">
-            </div>
+    <nav class=" navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Password Manager</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
-            </div>
-        </form>
-        <div class="hint-text">Already have an account? <a href="/">Login here</a></div>
+    <div class="container">
+        <div class="signup-form">
+            <form action="/examples/actions/confirmation.php" method="post">
+                <h2>Sign Up</h2>
+                <p>Please fill in this form to create an account!</p>
+                <hr>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="name_of_user" placeholder="Your Name"
+                        required="required">
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" name="user_email" placeholder="Email" required="required">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Username" required="required">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password"
+                        required="required">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password"
+                        required="required">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
+                </div>
+            </form>
+            <div class="hint-text">Already have an account? <a href="/">Login here</a></div>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="footer-bottom fixed-bottom mb-1">
+        <div class="text-center p-3 bg-light text-dark">
+            Developed with ❤️ by <a href="https://piyushanand.in" target="_blank" rel="noopener noreferrer"
+                class="text-decoration-none">Piyush
+                Anand</a>
+        </div>
+
     </div>
 
     <script src="../js/jquery-3.5.1.slim.min.js"></script>
