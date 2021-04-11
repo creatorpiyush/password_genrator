@@ -14,6 +14,10 @@ route.get("/signup", (req, res) => {
 });
 
 route.post("/adduser", (req, res) => {
+    if (req.body.password !== req.body.confirm_password) {
+        return res.render("signup", { err: `Passwords does not Matched` });
+    }
+
     const hashedPassword = bcrypt.hashSync(req.body.password, 13);
     const temp = new db.User({
         user_email: req.body.user_email,
