@@ -37,7 +37,7 @@
             <form action="/user/adduser" method="post">
                 <h2>Sign Up</h2>
                 <p>Please fill in this form to create an account!</p>
-                {{err}}
+                <div class="text-danger text-center font-weight-bold">{{err}}</div>
                 <hr>
                 <div class="form-group">
                     <input type="text" class="form-control" name="name_of_user" placeholder="Your Name"

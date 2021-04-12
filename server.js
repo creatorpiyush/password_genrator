@@ -4,6 +4,8 @@ const session = require("express-session");
 
 const methodOverride = require("method-override");
 
+const flash = require("req-flash");
+
 const app = express();
 
 app.use(express.json());
@@ -17,6 +19,7 @@ app.use(
         secret: "24knb6k247b2k7b2k7bk247hb2kh7b2",
     })
 );
+app.use(flash());
 
 app.use(express.static(__dirname + "/public"));
 

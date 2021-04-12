@@ -19,30 +19,31 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Password Manager</a>
-        <button class=" navbar-toggler btn-sm" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="">Profile</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link">
-                        <form action="/user/logout?_method=DELETE" method="post">
-                            <input type="submit" value="Logout">
-                        </form>
-                    </a>
-                </li>
             </ul>
+            <form class="form-inline my-2 my-lg-0" action="/user/logout?_method=DELETE" method="post">
+                {{!-- <span class=" mr-sm-2">{{user_data.username}}</span> --}}
+                <input class="btn btn-secondary btn-lg" type="submit" value="Logout">
+            </form>
         </div>
     </nav>
 
     <div class="container">
+
+        <div class="text-danger text-center font-weight-bold">{{err}}</div>
+
 
         <div class="text-center d-grid gap-4">
             <button class="button btn btn-success rounded-pill"
@@ -65,13 +66,15 @@
                     <label for="psw"><b>Application Password</b></label>
                     <input type="password" placeholder="Enter Application Password" name="application_password"
                         required>
+                    <div class="text-center">
+                        <button class="btn btn-success btn-lg btn-block rounded-pill" type="submit">Add</button>
 
-                    <button class="button" type="submit">Login</button>
+                    </div>
 
                 </div>
-                <div class="container" style="background-color:#f1f1f1">
-                    <button class="button" type="button" onclick="document.getElementById('id01').style.display='none'"
-                        class="cancelbtn">Cancel</button>
+                <div class="container text-right" style="background-color:#f1f1f1">
+                    <button class="btn btn-danger rounded-pill" type="button"
+                        onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
                 </div>
             </form>
         </div>

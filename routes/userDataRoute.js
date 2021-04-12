@@ -52,7 +52,7 @@ route.get("/:username", (req, res) => {
                     };
 
                     // res.send({ user_data });
-                    res.render("user", { user_data });
+                    res.render("user", { user_data, err: req.flash("err") });
                     // password decryption
                     // res.send(decrypt(user.user_data_storage[1].application_password));
                 })
@@ -86,7 +86,8 @@ route.post("/addaccount", async(req, res) => {
             res.redirect(`/${user.username}`);
         })
         .catch((err) => {
-            res.json(err);
+            req.flash("err", "⚠️ Please Refresh or Try again Later ⚠️");
+            // res.json(err);
         });
 });
 

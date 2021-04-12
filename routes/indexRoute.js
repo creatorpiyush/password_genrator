@@ -8,7 +8,10 @@ route.get("/", (req, res) => {
     if (req.session.userId) {
         return res.redirect(`/${req.session.username}`);
     }
-    return res.render("index");
+    return res.render("index", {
+        signup_success: req.flash("signup_success"),
+        err: req.flash("err"),
+    });
 });
 
 route.use("/", require("./userDataRoute"));

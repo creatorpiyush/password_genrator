@@ -6,11 +6,13 @@ const bcrypt = require("bcryptjs");
 
 const db = require("../models");
 
+const flash = require("req-flash");
+
 route.get("/signup", (req, res) => {
     if (req.session.userId) {
         return res.redirect(`/${req.session.username}`);
     }
-    return res.render("signup");
+    return res.render("signup", { err: req.flash("err") });
 });
 
 route.post("/adduser", (req, res) => {
@@ -26,8 +28,22 @@ route.post("/adduser", (req, res) => {
         password: hashedPassword,
     });
     temp.save((err, result) => {
-        if (err) return res.render("signup", { err: err });
+        if (err) {
+            if (Object.keys(err.keyValue)[0] === "user_email") {
+                req.flash("err", "⚠️ User With this Email Exists!! ⚠️");
 
+                return res.redirect("/user/signup");
+            }
+            if (Object.keys(err.keyValue)[0] === "username") {
+                req.flash("err", "⚠️ User With this Username Exists!! ⚠️");
+
+                return res.redirect("/user/signup");
+            }
+
+            return res.render("signup", { err: err });
+        }
+
+        req.flash("signup_success", "🙌 Signup Success!! Login Here 🙌");
         return res.redirect("/");
     });
 });
@@ -54,16 +70,12 @@ route.post("/login", (req, res) => {
 
                     return res.redirect(`/${result.username}`);
                 } else {
-                    return res.json({
-                        status: false,
-                        message: `Password not matched...`,
-                    });
+                    req.flash("err", "⚠️ Password does not matched... ⚠️");
+                    return res.redirect("/");
                 }
             } else {
-                return res.json({
-                    status: false,
-                    message: `Email not Found...`,
-                });
+                req.flash("err", "⚠️ Email not Found... ⚠️");
+                return res.redirect("/");
             }
         }
     );
