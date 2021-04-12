@@ -2,6 +2,11 @@ body {
     /* color: #fff; */
     background: #3598dc;
     font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
+    padding-bottom: 100px;
+    box-sizing: border-box;
 }
 
 .form-control {
@@ -402,4 +407,11 @@ span.psw {
     .cancelbtn {
         width: 100%;
     }
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 70px;
 }
