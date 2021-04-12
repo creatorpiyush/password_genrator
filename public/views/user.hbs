@@ -42,6 +42,11 @@
 
     <div class="container">
 
+        <div class="col-12 align-self-center">
+            <p class=" text-center h5 text-warning"> All of your Password are Encrypted🔐 and
+                Then Saved 👍</p>
+        </div>
+
         <div class="text-danger text-center font-weight-bold">{{err}}</div>
 
 
@@ -63,7 +68,13 @@
                     <label for="uname"><b>Application Username</b></label>
                     <input type="text" placeholder="Enter Application Username" name="application_username" required>
 
-                    <label for="psw"><b>Application Password</b></label>
+                    <label for="psw"><b>Application Password</b>
+                        <br>
+                        <span class="text-right text-warning" style="font-size: 12px;">ℹ️ No one can see your
+                            Passwords</span>
+                    </label>
+
+
                     <input type="password" placeholder="Enter Application Password" name="application_password"
                         required>
                     <div class="text-center">

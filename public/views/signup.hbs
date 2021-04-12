@@ -32,7 +32,56 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="clear"></div>
+
+    <div class="container-xl">
+        <div class="row">
+            <div class="col-12 col-sm-6 align-self-center">
+                <h1 class="line-1 anim-typewriter h1">Password Manager</h1>
+                <p class="text-center h4">An Application where You can Manage and Save all Your Passwords</p>
+                <p class=" text-center h5 text-warning"> All of your Password are Encrypted🔐 and
+                    Then Saved 👍</p>
+            </div>
+            <div class="col-12 col-sm-6 align-self-center">
+                <div class="signup-form">
+                    <form action="/user/adduser" method="post">
+                        <h2>Sign Up</h2>
+                        <p>Please fill in this form to create an account!</p>
+                        <div class="text-danger text-center font-weight-bold">{{err}}</div>
+                        <hr>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="name_of_user" placeholder="Your Name"
+                                required="required">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" name="user_email" placeholder="Email"
+                                required="required" autocapitalize="none">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="username" placeholder="Username"
+                                required="required" autocapitalize="none" oninput="this.value=this.value.toLowerCase()">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" placeholder="Password"
+                                required="required">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="confirm_password"
+                                placeholder="Confirm Password" required="required">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
+                        </div>
+                    </form>
+                    <div class="hint-text">Already have an account? <a href="/">Login here</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{!-- <div class="container">
         <div class="signup-form">
             <form action="/user/adduser" method="post">
                 <h2>Sign Up</h2>
@@ -44,10 +93,12 @@
                         required="required">
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" name="user_email" placeholder="Email" required="required">
+                    <input type="email" class="form-control" name="user_email" placeholder="Email" required="required"
+                        autocapitalize="none">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="username" placeholder="Username" required="required">
+                    <input type="text" class="form-control" name="username" placeholder="Username" required="required"
+                        autocapitalize="none" oninput="this.value=this.value.toLowerCase()">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" name="password" placeholder="Password"
@@ -64,7 +115,7 @@
             </form>
             <div class="hint-text">Already have an account? <a href="/">Login here</a></div>
         </div>
-    </div>
+    </div> --}}
 
 
     {{!-- <div class="footer-bottom fixed-bottom mb-1">
