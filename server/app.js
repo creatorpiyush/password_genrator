@@ -6,6 +6,8 @@ import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
 
+import MongoStore from 'connect-mongo';
+
 import { connectDb } from './config/db.js';
 import { configurePassport } from './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
@@ -24,19 +26,39 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
 
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 // Production CORS Configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : [process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:3001'];
+const getNormalizedOrigins = () => {
+  const origins = [];
+  if (process.env.ALLOWED_ORIGINS) {
+    origins.push(...process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim().replace(/\/$/, '')));
+  }
+  if (process.env.FRONTEND_URL) {
+    origins.push(process.env.FRONTEND_URL.trim().replace(/\/$/, ''));
+  }
+  if (process.env.RENDER_EXTERNAL_URL) {
+    origins.push(process.env.RENDER_EXTERNAL_URL.trim().replace(/\/$/, ''));
+  }
+  origins.push('http://localhost:5173', 'http://localhost:3001');
+  return origins;
+};
+
+const allowedOrigins = getNormalizedOrigins();
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || !isProduction || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('CORS origin blocked by SentinelVault security policy'));
+      if (!origin || !isProduction) {
+        return callback(null, true);
       }
+      const normalized = origin.trim().replace(/\/$/, '');
+      if (allowedOrigins.includes(normalized)) {
+        return callback(null, true);
+      }
+      callback(null, false);
     },
     credentials: true,
   })
@@ -59,12 +81,27 @@ if (isProduction && !process.env.SESSION_SECRET) {
   console.warn('⚠️ WARNING: SESSION_SECRET is not defined in environment variables.');
 }
 
+import mongoose from 'mongoose';
+
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.DB_URL;
+const sessionStore = mongoUri
+  ? MongoStore.create({
+      clientPromise: mongoose.connection.asPromise().then(c => c.getClient()),
+      ttl: 24 * 60 * 60,
+    })
+  : undefined;
+
 app.use(
   session({
     secret: sessionSecret || 'sentinel_vault_fallback_secret_2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: isProduction, maxAge: 24 * 60 * 60 * 1000 },
+    store: sessionStore,
+    cookie: {
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
+    },
   })
 );
 

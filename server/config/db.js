@@ -38,6 +38,7 @@ export const connectDb = async () => {
 
   if (mongoUri) {
     try {
+      mongoose.connection.on('error', () => {});
       await mongoose.connect(mongoUri, {
         serverSelectionTimeoutMS: 5000,
       });

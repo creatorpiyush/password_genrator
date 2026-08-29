@@ -8,8 +8,9 @@ import { hasRealGoogleKeys, hasRealGitHubKeys } from '../config/passport.js';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const getClientRedirectUrl = (params) => {
-  const baseUrl = process.env.FRONTEND_URL || (isProduction ? '' : 'http://localhost:5173');
-  return `${baseUrl}${params}`;
+  const rawUrl = process.env.FRONTEND_URL || process.env.RENDER_EXTERNAL_URL || (isProduction ? '' : 'http://localhost:5173');
+  const cleanBase = rawUrl ? rawUrl.trim().replace(/\/$/, '') : '';
+  return `${cleanBase}${params}`;
 };
 
 export const AuthController = {
@@ -124,7 +125,12 @@ export const AuthController = {
     const mockUser = 'Alex Smith';
     const mockProviderId = 'google_mock_1001';
     await AuthService.findOrCreateOAuthUser({ email: mockEmail, username: mockUser, provider: 'google', providerId: mockProviderId });
-    if (req.session) req.session.oauthEmail = mockEmail;
+    if (req.session) {
+      req.session.oauthEmail = mockEmail;
+      return req.session.save(() => {
+        res.redirect(getClientRedirectUrl('/?oauth=success'));
+      });
+    }
     res.redirect(getClientRedirectUrl('/?oauth=success'));
   },
 
@@ -132,7 +138,12 @@ export const AuthController = {
     if (hasRealGoogleKeys()) {
       return passport.authenticate('google', { failureRedirect: getClientRedirectUrl('/?error=oauth_failed') })(req, res, (err) => {
         if (err || !req.user) return res.redirect(getClientRedirectUrl('/?error=oauth_failed'));
-        if (req.session) req.session.oauthEmail = req.user.email;
+        if (req.session) {
+          req.session.oauthEmail = req.user.email;
+          return req.session.save(() => {
+            res.redirect(getClientRedirectUrl('/?oauth=success'));
+          });
+        }
         res.redirect(getClientRedirectUrl('/?oauth=success'));
       });
     }
@@ -150,7 +161,12 @@ export const AuthController = {
     const mockUser = 'Piyush Anand';
     const mockProviderId = 'github_mock_1002';
     await AuthService.findOrCreateOAuthUser({ email: mockEmail, username: mockUser, provider: 'github', providerId: mockProviderId });
-    if (req.session) req.session.oauthEmail = mockEmail;
+    if (req.session) {
+      req.session.oauthEmail = mockEmail;
+      return req.session.save(() => {
+        res.redirect(getClientRedirectUrl('/?oauth=success'));
+      });
+    }
     res.redirect(getClientRedirectUrl('/?oauth=success'));
   },
 
@@ -158,7 +174,12 @@ export const AuthController = {
     if (hasRealGitHubKeys()) {
       return passport.authenticate('github', { failureRedirect: getClientRedirectUrl('/?error=oauth_failed') })(req, res, (err) => {
         if (err || !req.user) return res.redirect(getClientRedirectUrl('/?error=oauth_failed'));
-        if (req.session) req.session.oauthEmail = req.user.email;
+        if (req.session) {
+          req.session.oauthEmail = req.user.email;
+          return req.session.save(() => {
+            res.redirect(getClientRedirectUrl('/?oauth=success'));
+          });
+        }
         res.redirect(getClientRedirectUrl('/?oauth=success'));
       });
     }
