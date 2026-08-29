@@ -22,13 +22,12 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Path Aliases */
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@engines/*": ["src/engines/*"],
-      "@crypto/*": ["src/crypto/*"],
-      "@components/*": ["src/components/*"],
-      "@store/*": ["src/store/*"]
+      "@/*": ["./src/*"],
+      "@engines/*": ["./src/engines/*"],
+      "@crypto/*": ["./src/crypto/*"],
+      "@components/*": ["./src/components/*"],
+      "@store/*": ["./src/store/*"]
     }
   },
   "include": ["src"],
