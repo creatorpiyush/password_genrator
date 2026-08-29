@@ -15,6 +15,7 @@ router.post('/login', loginLimiter, AuthController.login);
 router.post('/refresh', loginLimiter, AuthController.refresh);
 router.get('/user-info', authLimiter, AuthController.getUserInfo);
 router.get('/me', AuthController.me);
+router.get('/profile', AuthController.profile);
 
 // Passport OAuth Routes
 router.get('/google', AuthController.googleAuth);

@@ -5,6 +5,7 @@ import { GeneratorView } from './components/GeneratorView';
 import { SecurityAuditView } from './components/SecurityAuditView';
 import { AdminConsoleView } from './components/AdminConsoleView';
 import { InspectorModal } from './components/InspectorModal';
+import { ProfileModal } from './components/ProfileModal';
 import { AuthModal } from './components/AuthModal';
 import { VaultTrie } from './engines/trie';
 import { PasswordBloomFilter } from './engines/bloomFilter';
@@ -30,6 +31,7 @@ const App: React.FC = () => {
   const [decryptedItems, setDecryptedItems] = useState<DecryptedVaultItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isInspectorOpen, setIsInspectorOpen] = useState<boolean>(false);
+  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
 
   const [trieEngine] = useState(() => new VaultTrie());
   const [bloomFilter] = useState(() => new PasswordBloomFilter());
@@ -386,6 +388,7 @@ const App: React.FC = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onOpenInspector={() => setIsInspectorOpen(true)}
+          onOpenProfile={() => setIsProfileOpen(true)}
           isUnlocked={isUnlocked}
           userSession={userSession}
           onLockVault={handleLockVault}
@@ -440,6 +443,12 @@ const App: React.FC = () => {
         isOpen={isInspectorOpen}
         onClose={() => setIsInspectorOpen(false)}
         stats={engineStats}
+      />
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        userSession={userSession}
       />
     </div>
   );

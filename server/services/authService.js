@@ -216,4 +216,99 @@ export const AuthService = {
     const github = db.users.filter(u => u.provider === 'github').length;
     return { local, google, github };
   },
+
+  parseUserAgent(uaString = '') {
+    if (!uaString) return 'Unknown Web Browser';
+    let browser = 'Web Browser';
+    let os = 'Unknown OS';
+
+    if (uaString.includes('Firefox/')) browser = 'Firefox';
+    else if (uaString.includes('Edg/')) browser = 'Microsoft Edge';
+    else if (uaString.includes('Chrome/')) browser = 'Chrome';
+    else if (uaString.includes('Safari/')) browser = 'Safari';
+
+    if (uaString.includes('Macintosh') || uaString.includes('Mac OS X')) os = 'macOS';
+    else if (uaString.includes('Windows')) os = 'Windows';
+    else if (uaString.includes('Android')) os = 'Android';
+    else if (uaString.includes('iPhone') || uaString.includes('iPad')) os = 'iOS';
+    else if (uaString.includes('Linux')) os = 'Linux';
+
+    return `${browser} on ${os}`;
+  },
+
+  async updateUserLoginTelemetry({ email, userAgent, ipAddress }) {
+    if (!email) return;
+    const deviceName = this.parseUserAgent(userAgent);
+    const now = new Date();
+    const cleanIp = ipAddress ? ipAddress.replace(/^.*:/, '') : '127.0.0.1';
+
+    const status = getDbStatus();
+    if (status.isMongoConnected) {
+      const user = await User.findOne({ email });
+      if (user) {
+        user.lastLoginTime = now;
+        user.lastLoginDevice = deviceName;
+
+        if (!user.activeSessions) user.activeSessions = [];
+        const existingIdx = user.activeSessions.findIndex(s => s.deviceName === deviceName);
+        if (existingIdx >= 0) {
+          user.activeSessions[existingIdx].lastActiveAt = now;
+          user.activeSessions[existingIdx].ipAddress = cleanIp;
+        } else {
+          user.activeSessions.push({
+            deviceId: 'dev_' + Date.now(),
+            deviceName,
+            ipAddress: cleanIp,
+            lastActiveAt: now,
+          });
+        }
+        await user.save();
+      }
+      return;
+    }
+
+    // File DB
+    const db = getFileDb();
+    const user = db.users.find(u => u.email === email);
+    if (user) {
+      user.lastLoginTime = now.toISOString();
+      user.lastLoginDevice = deviceName;
+      if (!user.activeSessions) user.activeSessions = [];
+      const existingIdx = user.activeSessions.findIndex(s => s.deviceName === deviceName);
+      if (existingIdx >= 0) {
+        user.activeSessions[existingIdx].lastActiveAt = now.toISOString();
+        user.activeSessions[existingIdx].ipAddress = cleanIp;
+      } else {
+        user.activeSessions.push({
+          deviceId: 'dev_' + Date.now(),
+          deviceName,
+          ipAddress: cleanIp,
+          lastActiveAt: now.toISOString(),
+        });
+      }
+      saveFileDb(db);
+    }
+  },
+
+  async getUserProfile(email) {
+    const user = await this.getUserByEmail(email);
+    if (!user) return null;
+    return {
+      email: user.email,
+      username: user.username,
+      provider: user.provider || 'local',
+      role: user.role || 'user',
+      salt: user.salt,
+      lastLoginTime: user.lastLoginTime || user.createdAt || new Date(),
+      lastLoginDevice: user.lastLoginDevice || 'Chrome on macOS',
+      activeSessions: user.activeSessions && user.activeSessions.length > 0 ? user.activeSessions : [
+        {
+          deviceId: 'dev_primary',
+          deviceName: user.lastLoginDevice || 'Chrome on macOS',
+          ipAddress: '127.0.0.1',
+          lastActiveAt: user.lastLoginTime || new Date(),
+        }
+      ],
+    };
+  },
 };

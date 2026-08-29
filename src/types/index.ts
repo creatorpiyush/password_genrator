@@ -18,6 +18,24 @@ export interface DecryptedVaultItem extends Omit<VaultItem, 'encryptedPassword'>
   isBreached?: boolean;
 }
 
+export interface DeviceSession {
+  deviceId: string;
+  deviceName: string;
+  ipAddress: string;
+  lastActiveAt: string | number | Date;
+}
+
+export interface UserProfileData {
+  email: string;
+  username: string;
+  provider: 'local' | 'google' | 'github';
+  role: 'admin' | 'user';
+  salt: string;
+  lastLoginTime: string | number | Date;
+  lastLoginDevice: string;
+  activeSessions: DeviceSession[];
+}
+
 export interface UserSession {
   email: string;
   username: string;
@@ -27,6 +45,9 @@ export interface UserSession {
   refreshToken?: string;
   role?: 'admin' | 'user';
   provider?: 'google' | 'github' | 'local';
+  lastLoginTime?: string | number | Date;
+  lastLoginDevice?: string;
+  activeSessionsCount?: number;
 }
 
 export interface GeneratorOptions {

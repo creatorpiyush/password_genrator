@@ -6,6 +6,7 @@ interface NavbarProps {
   activeTab: 'vault' | 'generator' | 'audit' | 'admin';
   setActiveTab: (tab: 'vault' | 'generator' | 'audit' | 'admin') => void;
   onOpenInspector: () => void;
+  onOpenProfile: () => void;
   isUnlocked: boolean;
   userSession: UserSession | null;
   onLockVault: () => void;
@@ -15,6 +16,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   onOpenInspector,
+  onOpenProfile,
   isUnlocked,
   userSession,
   onLockVault,
@@ -77,9 +79,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {userSession && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', padding: '0.375rem 0.75rem', borderRadius: '0.5rem', background: 'rgba(6, 182, 212, 0.12)', border: '1px solid rgba(6, 182, 212, 0.3)', fontSize: '0.8125rem', color: '#38bdf8', fontWeight: 600 }}>
+              <button
+                onClick={onOpenProfile}
+                className="btn btn-ghost"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', padding: '0.375rem 0.75rem', borderRadius: '0.5rem', background: 'rgba(6, 182, 212, 0.12)', border: '1px solid rgba(6, 182, 212, 0.3)', fontSize: '0.8125rem', color: '#38bdf8', fontWeight: 600, cursor: 'pointer' }}
+                title="View Security & Connected Devices Profile"
+              >
                 <User style={{ width: 14, height: 14 }} /> {userSession.username || userSession.email}
-              </span>
+              </button>
             )}
 
             <button

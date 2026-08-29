@@ -32,6 +32,11 @@ export const AuthController = {
     const { email, authKeyHash } = req.body;
     try {
       const result = await AuthService.loginUser({ email, authKeyHash });
+      await AuthService.updateUserLoginTelemetry({
+        email,
+        userAgent: req.headers['user-agent'],
+        ipAddress: req.ip,
+      });
       res.json({
         success: true,
         token: result.token,
@@ -172,8 +177,13 @@ export const AuthController = {
 
   githubCallback(req, res, next) {
     if (hasRealGitHubKeys()) {
-      return passport.authenticate('github', { failureRedirect: getClientRedirectUrl('/?error=oauth_failed') })(req, res, (err) => {
+      return passport.authenticate('github', { failureRedirect: getClientRedirectUrl('/?error=oauth_failed') })(req, res, async (err) => {
         if (err || !req.user) return res.redirect(getClientRedirectUrl('/?error=oauth_failed'));
+        await AuthService.updateUserLoginTelemetry({
+          email: req.user.email,
+          userAgent: req.headers['user-agent'],
+          ipAddress: req.ip,
+        });
         if (req.session) {
           req.session.oauthEmail = req.user.email;
           return req.session.save(() => {
@@ -184,5 +194,18 @@ export const AuthController = {
       });
     }
     res.redirect(getClientRedirectUrl('/?oauth=success'));
+  },
+
+  async profile(req, res) {
+    const email = req.user?.email || req.session?.oauthEmail || req.query.email;
+    if (!email) return res.status(401).json({ error: 'Unauthorized' });
+
+    try {
+      const profileData = await AuthService.getUserProfile(email);
+      if (!profileData) return res.status(404).json({ error: 'User profile not found' });
+      res.json({ success: true, profile: profileData });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   },
 };

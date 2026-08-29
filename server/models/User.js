@@ -36,6 +36,22 @@ const UserSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    lastLoginTime: {
+      type: Date,
+      default: Date.now,
+    },
+    lastLoginDevice: {
+      type: String,
+      default: 'Unknown Device',
+    },
+    activeSessions: [
+      {
+        deviceId: String,
+        deviceName: String,
+        ipAddress: String,
+        lastActiveAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true,
