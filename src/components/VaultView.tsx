@@ -25,6 +25,7 @@ export const VaultView: React.FC<VaultViewProps> = ({
   const [appName, setAppName] = useState('');
   const [appUsername, setAppUsername] = useState('');
   const [appPassword, setAppPassword] = useState('');
+  const [showAddPassword, setShowAddPassword] = useState(false);
   const [category, setCategory] = useState<VaultItem['category']>('web');
 
   const togglePasswordVisibility = (id: string) => {
@@ -228,15 +229,26 @@ export const VaultView: React.FC<VaultViewProps> = ({
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.8125rem', color: '#94a3b8', marginBottom: '0.375rem', fontWeight: 600 }}>Password</label>
-                <input
-                  type="password"
-                  className="input-glass"
-                  placeholder="Enter application password"
-                  value={appPassword}
-                  onChange={(e) => setAppPassword(e.target.value)}
-                  style={{ width: '100%' }}
-                  required
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showAddPassword ? 'text' : 'password'}
+                    className="input-glass"
+                    placeholder="Enter application password"
+                    value={appPassword}
+                    onChange={(e) => setAppPassword(e.target.value)}
+                    style={{ width: '100%', paddingRight: '2.5rem' }}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAddPassword(!showAddPassword)}
+                    className="icon-btn"
+                    style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)' }}
+                    title={showAddPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showAddPassword ? <EyeOff style={{ width: 16, height: 16 }} /> : <Eye style={{ width: 16, height: 16 }} />}
+                  </button>
+                </div>
               </div>
 
               <div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Lock, Mail, User, AlertCircle, Key, ArrowRight, CheckCircle, RefreshCw } from 'lucide-react';
+import { Shield, Lock, Mail, User, AlertCircle, Key, ArrowRight, CheckCircle, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import { UserSession } from '../types';
 
 interface AuthModalProps {
@@ -28,6 +28,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [username, setUsername] = useState(userSession?.username || '');
   const [masterPassword, setMasterPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showMasterPassword, setShowMasterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [localError, setLocalError] = useState('');
 
   useEffect(() => {
@@ -159,15 +161,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <div style={{ position: 'relative' }}>
               <Key style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: 16, height: 16, color: '#06b6d4' }} />
               <input
-                type="password"
+                type={showMasterPassword ? 'text' : 'password'}
                 className="input-glass"
                 placeholder="Enter Master Password..."
                 value={masterPassword}
                 onChange={(e) => setMasterPassword(e.target.value)}
-                style={{ width: '100%', paddingLeft: '2.5rem' }}
+                style={{ width: '100%', paddingLeft: '2.5rem', paddingRight: '2.5rem' }}
                 autoFocus
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowMasterPassword(!showMasterPassword)}
+                className="icon-btn"
+                style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)' }}
+                title={showMasterPassword ? 'Hide password' : 'Show password'}
+              >
+                {showMasterPassword ? <EyeOff style={{ width: 16, height: 16 }} /> : <Eye style={{ width: 16, height: 16 }} />}
+              </button>
             </div>
           </div>
 
@@ -358,15 +369,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <div style={{ position: 'relative' }}>
             <Key style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: 16, height: 16, color: '#64748b' }} />
             <input
-              type="password"
+              type={showMasterPassword ? 'text' : 'password'}
               className="input-glass"
               placeholder={authMode === 'demo' ? 'Enter any master password...' : 'Enter Master Password'}
               value={masterPassword}
               onChange={(e) => setMasterPassword(e.target.value)}
-              style={{ width: '100%', paddingLeft: '2.5rem' }}
+              style={{ width: '100%', paddingLeft: '2.5rem', paddingRight: '2.5rem' }}
               autoFocus
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowMasterPassword(!showMasterPassword)}
+              className="icon-btn"
+              style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)' }}
+              title={showMasterPassword ? 'Hide password' : 'Show password'}
+            >
+              {showMasterPassword ? <EyeOff style={{ width: 16, height: 16 }} /> : <Eye style={{ width: 16, height: 16 }} />}
+            </button>
           </div>
         </div>
 
@@ -378,14 +398,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <div style={{ position: 'relative' }}>
               <Key style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: 16, height: 16, color: '#64748b' }} />
               <input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 className="input-glass"
                 placeholder="Re-enter Master Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                style={{ width: '100%', paddingLeft: '2.5rem' }}
+                style={{ width: '100%', paddingLeft: '2.5rem', paddingRight: '2.5rem' }}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="icon-btn"
+                style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)' }}
+                title={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                {showConfirmPassword ? <EyeOff style={{ width: 16, height: 16 }} /> : <Eye style={{ width: 16, height: 16 }} />}
+              </button>
             </div>
           </div>
         )}

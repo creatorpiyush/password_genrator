@@ -40,6 +40,7 @@ export const connectDb = async () => {
     try {
       mongoose.connection.on('error', () => {});
       await mongoose.connect(mongoUri, {
+        dbName: 'sentinel_vault',
         serverSelectionTimeoutMS: 5000,
       });
       isMongoConnected = true;
