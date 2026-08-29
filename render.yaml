@@ -8,7 +8,6 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /api/v1/health
-    autoDeployTrigger: 'on'
     envVars:
       - key: NODE_ENV
         value: production
@@ -42,14 +41,3 @@ services:
         sync: false
       - key: GITHUB_CALLBACK_URL
         sync: false
-
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: DENY
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: Strict-Transport-Security
-        value: max-age=31536000; includeSubDomains

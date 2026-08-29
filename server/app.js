@@ -43,6 +43,16 @@ app.use(
 );
 app.use(express.json());
 
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  if (isProduction) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
 // Session & Passport Configuration
 const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'sentinel_vault_dev_session_secret');
 if (isProduction && !process.env.SESSION_SECRET) {
