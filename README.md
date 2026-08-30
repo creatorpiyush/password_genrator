@@ -1,7 +1,7 @@
 # 🔐 SentinelVault: Zero-Knowledge Password Manager & Generator
 
 > **Vault Computational Engines & System Design Showcase Project**  
-> A high-performance, zero-knowledge password vault and cryptographically secure generator built with **Vite, React, TypeScript, Node.js, Express, and MongoDB**.
+> A high-performance, zero-knowledge password vault and cryptographically secure generator built with **Vite, React, TypeScript, Node.js, Express, and MongoDB**.  
 
 ---
 
@@ -62,7 +62,7 @@
     └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-For comprehensive architectural specifications, view the full [`architecture.md`](file:///Users/piyush.anand/self_code/password_genrator/architecture.md).
+For comprehensive architectural specifications, view the full [`architecture.md`](architecture.md).
 
 ---
 
