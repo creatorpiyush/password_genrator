@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelVault Extension</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo-badge">🛡️</div>
+        <div>
+          <h1>SentinelVault</h1>
+          <span class="subtitle">Zero-Knowledge V2.0</span>
+        </div>
+      </div>
+      <button id="lockBtn" class="icon-btn danger" title="Lock Vault" style="display: none;">🔒</button>
+    </header>
+
+    <!-- Locked View -->
+    <div id="lockedView" class="view active">
+      <div class="card">
+        <h2>Unlock Vault</h2>
+        <p class="description">Enter your Master Password to derive your 256-bit AES-GCM encryption key.</p>
+        
+        <form id="unlockForm">
+          <div id="accountDetectedBadge" class="status-banner" style="display: none; margin-bottom: 1rem; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #38bdf8; font-weight: 600;">
+            <span id="detectedAccountText">Logged in via GitHub</span>
+          </div>
+
+          <div id="emailInputGroup" class="input-group">
+            <label for="userEmail">Account Email Address</label>
+            <div class="input-wrapper">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="userEmail" placeholder="Enter account email..." required />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="masterPassword">Master Encryption Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔑</span>
+              <input type="password" id="masterPassword" placeholder="Enter Master Password..." required />
+              <button type="button" id="togglePasswordBtn" class="toggle-btn" title="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <div id="unlockError" class="error-banner" style="display: none;"></div>
+
+          <button type="submit" id="unlockSubmitBtn" class="btn btn-primary">
+            Unlock Vault
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Unlocked View -->
+    <div id="unlockedView" class="view">
+      <!-- Nav Tabs -->
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="searchTab">🔍 Search</button>
+        <button class="tab-btn" data-tab="generatorTab">🔑 Generator</button>
+        <button class="tab-btn" data-tab="settingsTab">⚙️ Settings</button>
+      </nav>
+
+      <!-- Tab 1: Vault Search -->
+      <div id="searchTab" class="tab-content active">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search application or domain..." />
+        </div>
+
+        <div id="currentTabBadge" class="domain-badge" style="display: none;">
+          🌐 Current Tab: <span id="currentDomain"></span>
+        </div>
+
+        <div id="vaultList" class="vault-list">
+          <!-- Items dynamically populated -->
+        </div>
+
+        <div id="emptyVault" class="empty-state" style="display: none;">
+          <p>No credentials found matching your search.</p>
+        </div>
+      </div>
+
+      <!-- Tab 2: Password Generator -->
+      <div id="generatorTab" class="tab-content">
+        <div class="card gen-card">
+          <!-- Password Output Display -->
+          <div class="gen-output-box">
+            <input type="text" id="genResult" readonly placeholder="Generated Password..." />
+            <button id="copyGenBtn" class="copy-inside-btn" title="Copy Password">
+              <span id="copyIcon">📋</span> <span id="copyText">Copy</span>
+            </button>
+          </div>
+
+          <!-- Password Strength Indicator -->
+          <div class="strength-meter">
+            <div id="strengthBar" class="strength-bar strong"></div>
+          </div>
+
+          <!-- Length Control -->
+          <div class="control-group">
+            <div class="control-label-row">
+              <span class="control-title">Password Length</span>
+              <span class="length-pill"><span id="lengthVal">16</span> characters</span>
+            </div>
+            <input type="range" id="lengthRange" min="8" max="64" value="16" class="custom-slider" />
+          </div>
+
+          <!-- Character Set Options -->
+          <div class="options-grid">
+            <label class="toggle-pill">
+              <input type="checkbox" id="incUpper" checked />
+              <span class="pill-check">✓</span>
+              <span>ABC Uppercase</span>
+            </label>
+            <label class="toggle-pill">
+              <input type="checkbox" id="incLower" checked />
+              <span class="pill-check">✓</span>
+              <span>abc Lowercase</span>
+            </label>
+            <label class="toggle-pill">
+              <input type="checkbox" id="incNum" checked />
+              <span class="pill-check">✓</span>
+              <span>123 Numbers</span>
+            </label>
+            <label class="toggle-pill">
+              <input type="checkbox" id="incSym" checked />
+              <span class="pill-check">✓</span>
+              <span>!@# Symbols</span>
+            </label>
+          </div>
+
+          <!-- Regenerate Button -->
+          <button id="regenBtn" class="btn btn-primary gen-submit-btn">
+            🔄 Generate Password
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 3: Settings -->
+      <div id="settingsTab" class="tab-content">
+        <div class="settings-container">
+          <!-- User Profile Card -->
+          <div class="card profile-card">
+            <div class="profile-header">
+              <div class="avatar-badge" id="settingsAvatar">👤</div>
+              <div class="profile-info">
+                <h3 id="settingsUsername">Vault User</h3>
+                <span id="settingsEmail" class="profile-email">user@sentinel.io</span>
+              </div>
+            </div>
+            <div class="profile-meta">
+              <span id="settingsProvider" class="provider-pill">🛡️ GitHub Account</span>
+              <span id="settingsSyncStatus" class="sync-pill">🟢 Cloud Synced</span>
+            </div>
+          </div>
+
+          <!-- Preferences Card -->
+          <div class="card preferences-card" style="margin-top: 0.75rem;">
+            <h3>Security Preferences</h3>
+            
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">⏱️ Auto-Lock Vault</div>
+                <div class="setting-sub">Lock extension after inactivity</div>
+              </div>
+              <select id="autoLockSelect" class="setting-select">
+                <option value="15">15 Mins</option>
+                <option value="60">1 Hour</option>
+                <option value="close">On Close</option>
+                <option value="never">Never</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">⚡ 1-Click Auto-Fill</div>
+                <div class="setting-sub">Highlight login fields on active web pages</div>
+              </div>
+              <input type="checkbox" id="autoFillToggle" checked class="setting-checkbox" />
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">📋 Clear Clipboard</div>
+                <div class="setting-sub">Clear copied passwords after 30 seconds</div>
+              </div>
+              <input type="checkbox" id="clearClipboardToggle" checked class="setting-checkbox" />
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="settings-actions" style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <button id="syncNowBtn" class="btn btn-primary">
+              🔄 Sync Cloud Vault
+            </button>
+            <button id="lockVaultSettingBtn" class="btn btn-secondary" style="color: #f43f5e; border-color: rgba(244, 63, 94, 0.3);">
+              🔒 Lock Vault Immediately
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

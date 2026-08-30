@@ -22,6 +22,7 @@
   - **LRU Cache Engine** with automatic TTL eviction and V8 memory sanitation.
   - **Levenshtein Distance Engine** for vault password reuse & similarity auditing.
 - **🌐 Offline-First Synchronization**: Locally persistent encrypted IndexedDB vault with automatic Last-Write-Wins (LWW) CRDT conflict resolution when reconnecting.
+- **🧩 Manifest V3 Chrome Extension (`extension/`)**: Production-grade Chrome Extension featuring 1-click web form auto-fill (`content.js`), domain-matched Trie vault search, CSPRNG password generator, and zero-knowledge local key derivation. **[Read Chrome Extension Guide](extension/README_EXTENSION.md)**.
 - **🛠️ System Design & Engine Live Inspector**: Built-in interactive visualizer panel allowing reviewers and interviewers to inspect algorithm execution and key derivation pipelines live!
 
 ---
