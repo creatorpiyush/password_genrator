@@ -109,11 +109,16 @@ configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
+import breachRoutes from './routes/breachRoutes.js';
+import shareRoutes from './routes/shareRoutes.js';
+
 // Mount API Routers
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/vault', vaultRoutes);
 app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/breach', breachRoutes);
+app.use('/api/v1/share', shareRoutes);
 
 // Serve compiled static assets from Vite `dist/` directory in production
 const distPath = path.join(__dirname, '../dist');

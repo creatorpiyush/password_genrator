@@ -252,3 +252,20 @@ server/
 | **Unprivileged Admin Access** | `requireAdmin` middleware verifies `user.role === 'admin'`. UI conditionally renders Admin Console controls only for authorized admins. |
 | **Memory Dump / Heap Inspection** | Decrypted passwords in LRU Cache auto-expire with string reference clearing for V8 GC sweep. |
 | **Brute-Force & Credential Stuffing** | Token Bucket Rate Limiting per IP + PBKDF2 high work-factor (100,000 iterations). |
+
+---
+
+## 7. Data Mobility, Dark Web Breach Check & One-Time Secret Sharing
+
+### A. Data Mobility & Import/Export Engine (`importExportService.ts`)
+- **Bitwarden & 1Password CSV Importers**: Custom RFC 4180 CSV parser handling quoted multiline notes and headers. Automatically deduplicates imported items against existing vault records.
+- **Encrypted JSON Vault Backups**: Encrypts full vault payload using client-side **AES-256-GCM** encryption with a user-supplied export passphrase derived via **PBKDF2**.
+
+### B. Dark Web Breach Monitoring API (`breachCheckService.ts`)
+- **HaveIBeenPwned k-Anonymity Model**: Computes SHA-1 hash of password using `WebCrypto`. Queries `https://api.pwnedpasswords.com/range/{prefix}` using ONLY the first 5 characters of the SHA-1 hash.
+- **Privacy Guarantee**: Neither the password nor the full SHA-1 hash is ever sent over the network.
+- **CORS Relay Route**: Express proxy endpoint `/api/v1/breach/check-prefix/:prefix` relays 5-character hash prefixes to HIBP.
+
+### C. One-Time Zero-Knowledge Encrypted Share Links (`shareRoutes.js` & `ShareSecretModal.tsx`)
+- **Hash Fragment Key Isolation**: Secret payload is encrypted client-side using a random 256-bit AES key. The decryption key is placed strictly in the URL hash fragment (`#key`), which browsers never send to HTTP servers.
+- **Self-Destructing Storage**: Express endpoint `/api/v1/share/create` stores encrypted ciphertext blobs with a view limit (default `1`) and expiration TTL (24h). The record is permanently deleted from the database immediately after being consumed.

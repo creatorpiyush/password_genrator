@@ -7,6 +7,10 @@ import { AdminConsoleView } from './components/AdminConsoleView';
 import { InspectorModal } from './components/InspectorModal';
 import { ProfileModal } from './components/ProfileModal';
 import { AuthModal } from './components/AuthModal';
+import { ImportExportModal } from './components/ImportExportModal';
+import { ShareSecretModal } from './components/ShareSecretModal';
+import { PublicShareView } from './components/PublicShareView';
+import { ImportedCredential } from './services/importExportService';
 import { VaultTrie } from './engines/trie';
 import { PasswordBloomFilter } from './engines/bloomFilter';
 import { PasswordGenerator } from './engines/generator';
@@ -32,6 +36,11 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isInspectorOpen, setIsInspectorOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+  const [isImportExportOpen, setIsImportExportOpen] = useState<boolean>(false);
+  const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
+
+  // Check if current URL is a Public Share Link (#share=...&key=...)
+  const isShareViewRoute = window.location.hash.includes('share=');
 
   const [trieEngine] = useState(() => new VaultTrie());
   const [bloomFilter] = useState(() => new PasswordBloomFilter());
@@ -365,6 +374,57 @@ const App: React.FC = () => {
     }
   };
 
+  // Batch Import Credentials (from Bitwarden, 1Password, or Encrypted JSON)
+  const handleBatchImportItems = async (importedList: ImportedCredential[]) => {
+    if (!mekKey) return;
+
+    const newVaultItems: VaultItem[] = [];
+    const newDecryptedItems: DecryptedVaultItem[] = [];
+
+    for (const item of importedList) {
+      const encryptedPayload = await AesGcmEngine.encrypt(item.password, mekKey);
+      const newItem: VaultItem = {
+        id: 'item_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        applicationName: item.applicationName,
+        applicationUsername: item.applicationUsername,
+        encryptedPassword: encryptedPayload,
+        category: item.category || 'web',
+        notes: item.notes,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+
+      newVaultItems.push(newItem);
+      await idb.saveVaultItem(newItem);
+      await syncEngine.recordMutation('UPSERT', newItem);
+
+      const entropy = PasswordGenerator.calculateEntropy(item.password);
+      newDecryptedItems.push({
+        ...newItem,
+        password: item.password,
+        strengthEntropy: entropy,
+        isBreached: bloomFilter.mightContain(item.password) || item.password.length < 8 || entropy < 40,
+      });
+
+      lruCache.put(newItem.id, item.password);
+    }
+
+    const updatedEncrypted = [...encryptedItems, ...newVaultItems];
+    setEncryptedItems(updatedEncrypted);
+    setDecryptedItems(prev => [...prev, ...newDecryptedItems]);
+
+    if (userSession && userSession.email !== 'local_guest') {
+      fetch('/api/v1/vault/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userSession.token}`,
+        },
+        body: JSON.stringify({ email: userSession.email, encryptedItems: updatedEncrypted }),
+      }).catch(() => {});
+    }
+  };
+
   // Trie-based Filtered Search Results
   const filteredItems = searchQuery
     ? trieEngine.searchPrefix(searchQuery).map(trieMatch => {
@@ -381,6 +441,10 @@ const App: React.FC = () => {
     levenshteinScans: decryptedItems.length,
   };
 
+  if (isShareViewRoute) {
+    return <PublicShareView />;
+  }
+
   return (
     <div className="app-container">
       <div className="content-wrapper">
@@ -389,6 +453,8 @@ const App: React.FC = () => {
           setActiveTab={setActiveTab}
           onOpenInspector={() => setIsInspectorOpen(true)}
           onOpenProfile={() => setIsProfileOpen(true)}
+          onOpenImportExport={() => setIsImportExportOpen(true)}
+          onOpenShare={() => setIsShareOpen(true)}
           isUnlocked={isUnlocked}
           userSession={userSession}
           onLockVault={handleLockVault}
@@ -449,6 +515,18 @@ const App: React.FC = () => {
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
         userSession={userSession}
+      />
+
+      <ImportExportModal
+        isOpen={isImportExportOpen}
+        onClose={() => setIsImportExportOpen(false)}
+        vaultItems={decryptedItems}
+        onImportItems={handleBatchImportItems}
+      />
+
+      <ShareSecretModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
       />
     </div>
   );

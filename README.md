@@ -22,6 +22,9 @@
   - **LRU Cache Engine** with automatic TTL eviction and V8 memory sanitation.
   - **Levenshtein Distance Engine** for vault password reuse & similarity auditing.
 - **🌐 Offline-First Synchronization**: Locally persistent encrypted IndexedDB vault with automatic Last-Write-Wins (LWW) CRDT conflict resolution when reconnecting.
+- **📥/📤 Vault Data Mobility & Import/Export**: Built-in Bitwarden CSV and 1Password CSV import parsers with automatic deduplication, plus AES-256-GCM encrypted JSON vault backup exports and plaintext CSV exports.
+- **🚨 Dark Web Breach Monitoring API (HaveIBeenPwned k-Anonymity)**: Real-time dark web breach checking via HIBP API using SHA-1 5-character hash prefixes (`api.pwnedpasswords.com/range/{prefix}`). Full passwords and full hashes are **NEVER** sent over the network.
+- **⏳ One-Time Zero-Knowledge Encrypted Shareable Links**: Generate self-destructing secret links where the AES decryption key is placed strictly in the URL hash fragment (`#key`), so backend servers never see the key. Shared secrets automatically self-destruct upon initial view or 24-hour expiration.
 - **🧩 Manifest V3 Chrome Extension (`extension/`)**: Production-grade Chrome Extension featuring 1-click web form auto-fill (`content.js`), domain-matched Trie vault search, CSPRNG password generator, and zero-knowledge local key derivation. **[Read Chrome Extension Guide](extension/README_EXTENSION.md)**.
 - **🛠️ System Design & Engine Live Inspector**: Built-in interactive visualizer panel allowing reviewers and interviewers to inspect algorithm execution and key derivation pipelines live!
 

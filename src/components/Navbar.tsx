@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Key, Cpu, Lock, Terminal, User, Server } from 'lucide-react';
+import { Shield, Key, Cpu, Lock, Terminal, User, Server, Upload, Share2 } from 'lucide-react';
 import { UserSession } from '../types';
 
 interface NavbarProps {
@@ -7,6 +7,8 @@ interface NavbarProps {
   setActiveTab: (tab: 'vault' | 'generator' | 'audit' | 'admin') => void;
   onOpenInspector: () => void;
   onOpenProfile: () => void;
+  onOpenImportExport?: () => void;
+  onOpenShare?: () => void;
   isUnlocked: boolean;
   userSession: UserSession | null;
   onLockVault: () => void;
@@ -17,6 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenInspector,
   onOpenProfile,
+  onOpenImportExport,
+  onOpenShare,
   isUnlocked,
   userSession,
   onLockVault,
@@ -77,7 +81,29 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {onOpenImportExport && (
+              <button
+                onClick={onOpenImportExport}
+                className="btn btn-ghost"
+                style={{ color: '#06b6d4', borderColor: 'rgba(6, 182, 212, 0.3)', background: 'rgba(6, 182, 212, 0.1)' }}
+                title="Import or Export Vault Credentials"
+              >
+                <Upload style={{ width: 15, height: 15 }} /> Data Mobility
+              </button>
+            )}
+
+            {onOpenShare && (
+              <button
+                onClick={onOpenShare}
+                className="btn btn-ghost"
+                style={{ color: '#a855f7', borderColor: 'rgba(168, 85, 247, 0.3)', background: 'rgba(168, 85, 247, 0.1)' }}
+                title="Create Self-Destructing Encrypted Share Link"
+              >
+                <Share2 style={{ width: 15, height: 15 }} /> One-Time Share
+              </button>
+            )}
+
             {userSession && (
               <button
                 onClick={onOpenProfile}
